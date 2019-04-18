@@ -1,5 +1,7 @@
 package code.android.ngocthai.bottomnavigationsample.basic
 
+import android.content.Context
+import android.icu.text.AlphabeticIndex
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
@@ -46,7 +48,6 @@ class BottomNavigationActivity : AppCompatActivity() {
 
         // Change icon
 //        navigation.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_android_black_24dp)
-
 
         changeIcon()
     }

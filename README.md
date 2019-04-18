@@ -95,4 +95,55 @@ navigation.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_android_bla
 
 # Custom BottomNavigation
 
+## Custom simple
+
+### Label visibility
+
+* Để custom được label ẩn hoặc hiện, chúng ta sử dụng thuộc tính **labelVisibilityMode** với các mode sau:
+
+    * **LABEL_VISIBILITY_AUTO**: Hiển thị label mặc định với 4 tab trở lên.
+    * **LABEL_VISIBILITY_SELECTED**: Label chỉ được hiển thị khi tab được chọn.
+    * **LABEL_VISIBILITY_LABELED**: Label được hiển thiij trên tấ cả các mục điều hướng
+    * **LABEL_VISIBILITY_UNLABELED**: Label được ẩn đi cho tất cả các mục.
+
+* Có thể set trực tiếp vào xml của BottomNavigation
+
+```
+app:labelVisibilityMode="unlabeled"
+```
+
+### Horizontal translation
+
+* Thuộc tính **itemHorizontalTranslationEnabled** có thể sử dụng để đặt xem các mục navigation item có được chuyển sang hay không khi được chọn hoặc bỏ chọn.
+
+* Giá trị mặc định là false. Thuộc tính này cũng được quyết định bởi **labelVisibilityMode** được chọn và số lượng item.
+
+* Nó chỉ hoạt động được khi label mode ở chế độ **AUTO** và số item lớn hơn 3 hoặc là ở chế độ **SELECTED**.
+
+```
+app:itemHorizontalTranslationEnabled="true"
+```
+
+### Theme and Color
+
+* BottomNavigationView có thể cài đặt theme được theo 3 hệ thống Material Theming là màu sắc, kiểu chữ và hình dạng.
+
+* Có 2 kiểu kế thừa từ **Widget.MaterialComponents.BottomNavigationView** để custom style, mỗi kiểu có hậu tố kiểu tùy chọn như **surface** hoặc là **colored**.
+
+* Màu nền của BottomNavigationView có thể chỉnh được bằng thuộc tính **backgroundTint**.
+
+* Màu của text và icon cũng được chỉnh bằng các thuộc tính như **itemTextColor** và **itemIconTint**. Thuộc tính này yêu cần một bộ chọn dạng checked true hoặc false để hiển thị màu khi click.
+
+### Typography
+
+* Text của các label trong BottomNavigationView sẽ áp dụng thuocj tính **fontFamily** trong app theme.
+
+* Chúng cũng có thể chỉnh được bởi người dùng thông qua các thuộc tính **itemTextAppearanceActive** và **itemTextAppearanceInactive** cho các trạng thái checked true hoặc false. 
+
+### Shape
+
+* Không có khía cạnh nào của BotttomNavigation có thể được điều chỉnh phù hợp theo hình dạng vì chúng kéo dài theo chiều rộng của màn hình.
+
+* Mặc dù vậy thì kích thước của các item icon có thể điều chỉnh được thông qua **BottomNavigationView#itemIconSize**. 
+
 # BottomNavigation with Navigation Component
