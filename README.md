@@ -147,3 +147,52 @@ app:itemHorizontalTranslationEnabled="true"
 * Mặc dù vậy thì kích thước của các item icon có thể điều chỉnh được thông qua **BottomNavigationView#itemIconSize**. 
 
 # BottomNavigation with Navigation Component
+
+* Trước hết, hãy tạo 1 fragment của **NavHostFragment** để chứa các fragment hiển thị của navigation component bên trong activity có chứa bottom navigation.
+
+```
+<fragment
+        android:id="@+id/nav_host_component"
+        class="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/navigation"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/bottom_nav_graph" />
+```
+
+* Có thể thấy ở đó sẽ xuất hiện một thuộc tính **app:NavGraph** dùng để đến file graph chứa các fragment hoặc activity trong đó. File này mỗi khi tạo 1 destination thì phải trùng với id đặt trong menu của Bottom Navigation thì mới có thể xử lý được sự kiện dựa vào Navigation Component.
+
+```
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/homeFragment"
+    android:id="@+id/bottom_nav_graph">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="code.android.ngocthai.bottomnavigationsample.fragment.HomeFragment"
+        android:label="Home Fragment" />
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="code.android.ngocthai.bottomnavigationsample.fragment.DashboardFragment"
+        android:label="Dashboard Fragment" />
+
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="code.android.ngocthai.bottomnavigationsample.fragment.NotificationFragment"
+        android:label="Notification Fragment" />
+</navigation>
+```
+
+* Sau đó xử lý việc nhận sự kiện click của BottomNavigation và để cho Navigation Component xử lý các sự kiện đó bằng phương thức **setupWithNavController**.
+
+```
+Navigation.findNavController(this, R.id.nav_host_component)?.let { navigation ->
+    NavigationUI.setupWithNavController(bottomNavigation, navigation)
+}
+```

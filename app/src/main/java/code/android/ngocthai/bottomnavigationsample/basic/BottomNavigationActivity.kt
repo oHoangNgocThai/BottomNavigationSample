@@ -44,10 +44,10 @@ class BottomNavigationActivity : AppCompatActivity() {
         navigation.selectedItemId = R.id.navigation_home
 
         // Set dynamic menu
-//        navigation.inflateMenu(R.menu.navigation_simple)
+//        bottom_navigation.inflateMenu(R.menu.navigation_simple)
 
         // Change icon
-//        navigation.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_android_black_24dp)
+//        bottom_navigation.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_android_black_24dp)
 
         changeIcon()
     }
