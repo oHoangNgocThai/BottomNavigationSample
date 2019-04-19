@@ -257,7 +257,14 @@ app:itemHorizontalTranslationEnabled="true"
 
 * Sử dụng class đã được custom này ở trong XML như bình thường vì nó là một đối tượng kế thừa từ BotttomNavigationView.
 
-* Tham khảo cách tạo chi tiết tại [đây](https://proandroiddev.com/how-i-drew-custom-shapes-in-bottom-bar-c4539d86afd7)
+* Tham khảo cách tạo chi tiết tại [đây](https://proandroiddev.com/how-i-drew-custom-shapes-in-bottom-bar-c4539d86afd7) hoặc [đây](https://www.androidtutorialonline.com/curved-bottom-navigation-view-animation/)
 
 ### Custom from FrameLayout
 
+* Với việc custom ra một BottomNavigationView không thể dùng có sẵn, cũng có nghĩa là tạo ra một thư viện mới và tự xử lý các trường hợp như click đổi màu, chuyển tab, ...
+
+* Theo như trong source của BottomNavigationView cũng là một class được extend từ **FrameLayout**, điều này cho thấy đây là một loại custom view. Muốn thêm giao diện khác như thông báo, ảnh, ... vào bên trong thì phải thực hiện một layout có sẵn hoặc được tạo bằng code để xử lý.
+
+* Xem chi tiết source của class BottomNavigationView tại [đây](https://android.googlesource.com/platform/frameworks/support/+/9253a923d5de1336a385775b23cac04680a0af2a/design/src/android/support/design/widget/BottomNavigationView.java)
+
+* Trước hết, phải tạo một layout 
