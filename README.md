@@ -93,6 +93,57 @@ navigation.inflateMenu(R.menu.navigation_simple)
 navigation.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_android_black_24dp)
 ```
 
+# BottomNavigation with Navigation Component
+
+* Trước hết, hãy tạo 1 fragment của **NavHostFragment** để chứa các fragment hiển thị của navigation component bên trong activity có chứa bottom navigation.
+
+```
+<fragment
+        android:id="@+id/nav_host_component"
+        class="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/navigation"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/bottom_nav_graph" />
+```
+
+* Có thể thấy ở đó sẽ xuất hiện một thuộc tính **app:NavGraph** dùng để đến file graph chứa các fragment hoặc activity trong đó. File này mỗi khi tạo 1 destination thì phải trùng với id đặt trong menu của Bottom Navigation thì mới có thể xử lý được sự kiện dựa vào Navigation Component.
+
+```
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/homeFragment"
+    android:id="@+id/bottom_nav_graph">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="code.android.ngocthai.bottomnavigationsample.fragment.HomeFragment"
+        android:label="Home Fragment" />
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="code.android.ngocthai.bottomnavigationsample.fragment.DashboardFragment"
+        android:label="Dashboard Fragment" />
+
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="code.android.ngocthai.bottomnavigationsample.fragment.NotificationFragment"
+        android:label="Notification Fragment" />
+</navigation>
+```
+
+* Sau đó xử lý việc nhận sự kiện click của BottomNavigation và để cho Navigation Component xử lý các sự kiện đó bằng phương thức **setupWithNavController**.
+
+```
+Navigation.findNavController(this, R.id.nav_host_component)?.let { navigation ->
+    NavigationUI.setupWithNavController(bottomNavigation, navigation)
+}
+```
+
 # Custom BottomNavigation
 
 ## Custom simple
@@ -146,53 +197,67 @@ app:itemHorizontalTranslationEnabled="true"
 
 * Mặc dù vậy thì kích thước của các item icon có thể điều chỉnh được thông qua **BottomNavigationView#itemIconSize**. 
 
-# BottomNavigation with Navigation Component
+## Custom Layout Advance
 
-* Trước hết, hãy tạo 1 fragment của **NavHostFragment** để chứa các fragment hiển thị của navigation component bên trong activity có chứa bottom navigation.
+> Có 2 cách để custom 1 view của BottomNavigationView là trực tiếp kế thừa từ class **BottomNavigationView** hoặc là làm lại một class mới kế thừa từ **FrameLayout** như cách mà Bottom Navigation đã làm.
 
-```
-<fragment
-        android:id="@+id/nav_host_component"
-        class="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/navigation"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/bottom_nav_graph" />
-```
+### Custom from BottomNavigationView
 
-* Có thể thấy ở đó sẽ xuất hiện một thuộc tính **app:NavGraph** dùng để đến file graph chứa các fragment hoặc activity trong đó. File này mỗi khi tạo 1 destination thì phải trùng với id đặt trong menu của Bottom Navigation thì mới có thể xử lý được sự kiện dựa vào Navigation Component.
+* Đối với cách này chúng ta sẽ chỉ chỉnh sửa layout có sẵn của BottomNavigationView, override lại một số hàm để chỉnh lại layout cho nó. Ở đây sẽ là một ví dụ tạo một bottom navigation như sau: 
+
+![](https://cdn-images-1.medium.com/max/800/1*HlunQT_xGBEM-kv68byWsg.png) 
+
+* Như các bạn đã thấy, để có thể chỉnh sửa shape của BottomNavigationView, chúng ta phải thực hiện tính toán để vẽ lại layout cho nó.
+
+* Sử dụng đối tượng Path để tính toán và vẽ giữa các điểm được tính toán với nhau. Dựa vào width và height khi override phương thức **onSizeChanged** để tính toán điểm được vẽ. 
 
 ```
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:startDestination="@id/homeFragment"
-    android:id="@+id/bottom_nav_graph">
+        mFirstCurveStartPoint.set((mNavigationBarWidth / 2) - (CURVE_CIRCLE_RADIUS * 2) - (CURVE_CIRCLE_RADIUS / 3), 0);
+        // the coordinates (x,y) of the end point after curve
+        mFirstCurveEndPoint.set(mNavigationBarWidth / 2, CURVE_CIRCLE_RADIUS + (CURVE_CIRCLE_RADIUS / 4));
+        // same thing for the second curve
+        mSecondCurveStartPoint = mFirstCurveEndPoint;
+        mSecondCurveEndPoint.set((mNavigationBarWidth / 2) + (CURVE_CIRCLE_RADIUS * 2) + (CURVE_CIRCLE_RADIUS / 3), 0);
 
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="code.android.ngocthai.bottomnavigationsample.fragment.HomeFragment"
-        android:label="Home Fragment" />
+        // the coordinates (x,y)  of the 1st control point on a cubic curve
+        mFirstCurveControlPoint1.set(mFirstCurveStartPoint.x + CURVE_CIRCLE_RADIUS + (CURVE_CIRCLE_RADIUS / 4), mFirstCurveStartPoint.y);
+        // the coordinates (x,y)  of the 2nd control point on a cubic curve
+        mFirstCurveControlPoint2.set(mFirstCurveEndPoint.x - (CURVE_CIRCLE_RADIUS * 2) + CURVE_CIRCLE_RADIUS, mFirstCurveEndPoint.y);
 
-    <fragment
-        android:id="@+id/dashboardFragment"
-        android:name="code.android.ngocthai.bottomnavigationsample.fragment.DashboardFragment"
-        android:label="Dashboard Fragment" />
+        mSecondCurveControlPoint1.set(mSecondCurveStartPoint.x + (CURVE_CIRCLE_RADIUS * 2) - CURVE_CIRCLE_RADIUS, mSecondCurveStartPoint.y);
+        mSecondCurveControlPoint2.set(mSecondCurveEndPoint.x - (CURVE_CIRCLE_RADIUS + (CURVE_CIRCLE_RADIUS / 4)), mSecondCurveEndPoint.y);
 
-    <fragment
-        android:id="@+id/notificationFragment"
-        android:name="code.android.ngocthai.bottomnavigationsample.fragment.NotificationFragment"
-        android:label="Notification Fragment" />
-</navigation>
+        mPath.reset();
+        mPath.moveTo(0, 0);
+        mPath.lineTo(mFirstCurveStartPoint.x, mFirstCurveStartPoint.y);
+
+        mPath.cubicTo(mFirstCurveControlPoint1.x, mFirstCurveControlPoint1.y,
+                mFirstCurveControlPoint2.x, mFirstCurveControlPoint2.y,
+                mFirstCurveEndPoint.x, mFirstCurveEndPoint.y);
+
+        mPath.cubicTo(mSecondCurveControlPoint1.x, mSecondCurveControlPoint1.y,
+                mSecondCurveControlPoint2.x, mSecondCurveControlPoint2.y,
+                mSecondCurveEndPoint.x, mSecondCurveEndPoint.y);
+
+        mPath.lineTo(mNavigationBarWidth, 0);
+        mPath.lineTo(mNavigationBarWidth, mNavigationBarHeight);
+        mPath.lineTo(0, mNavigationBarHeight);
+        mPath.close();
 ```
 
-* Sau đó xử lý việc nhận sự kiện click của BottomNavigation và để cho Navigation Component xử lý các sự kiện đó bằng phương thức **setupWithNavController**.
+* Sau khi đã tính toán xong và có được đối tượng Path, cần override lại phương thức **onDraw()** để vẽ các đường lại với nhau và sử dụng đối tượng Paint để set màu cho nó.
 
 ```
-Navigation.findNavController(this, R.id.nav_host_component)?.let { navigation ->
-    NavigationUI.setupWithNavController(bottomNavigation, navigation)
-}
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.drawPath(mPath, mPaint);
+    }
 ```
+
+* Sử dụng class đã được custom này ở trong XML như bình thường vì nó là một đối tượng kế thừa từ BotttomNavigationView.
+
+* Tham khảo cách tạo chi tiết tại [đây](https://proandroiddev.com/how-i-drew-custom-shapes-in-bottom-bar-c4539d86afd7)
+
+### Custom from FrameLayout
+
