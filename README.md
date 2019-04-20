@@ -4,6 +4,12 @@
 
 ## Overview
 
+* BottomNavigation Bar là các thanh điều hướng nằm ở phía dưới cùng của màn hình. Mỗi một destination được đại diện bởi 1 icon và 1 text, khi click vào từng destination người dùng sẽ được dẫn đến các nội dung mà nó biểu tượng cho.
+
+* Thông thường được sử dụng cho trường hợp có 3 đến 5 tab, mỗi khi click vào tab nào thì icon và text sẽ đổi màu hoặc nổi lên hiển thị được nhấn vào.
+
+* Đây là một class CustomView từ **FrameLayout**, với đầu vào là 1 menu và một số thuộc tính căn chỉnh màu, size, font chữ.
+
 ## Create BottomNavigation
 
 * Để tạo giao diện cho BottomNavigation, trước hết hãy thiết kế trong layout với widget **BottomNavigationView**.
@@ -11,15 +17,13 @@
 ```
 <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
         android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/navigation" />
+        app:itemIconTint="@color/color_tab"
+        app:itemTextColor="@color/color_tab"
+        app:labelVisibilityMode="selected"
+        app:menu="@menu/bottom_navigation" />
 ```
 
 * Sau đó chú ý đến tạo một menu để thêm vào trong thuộc tính **app:menu** của BottomNavigation.
@@ -187,7 +191,7 @@ app:itemHorizontalTranslationEnabled="true"
 
 ### Typography
 
-* Text của các label trong BottomNavigationView sẽ áp dụng thuocj tính **fontFamily** trong app theme.
+* Text của các label trong BottomNavigationView sẽ áp dụng thuộc tính **fontFamily** trong app theme.
 
 * Chúng cũng có thể chỉnh được bởi người dùng thông qua các thuộc tính **itemTextAppearanceActive** và **itemTextAppearanceInactive** cho các trạng thái checked true hoặc false. 
 
@@ -266,5 +270,3 @@ app:itemHorizontalTranslationEnabled="true"
 * Theo như trong source của BottomNavigationView cũng là một class được extend từ **FrameLayout**, điều này cho thấy đây là một loại custom view. Muốn thêm giao diện khác như thông báo, ảnh, ... vào bên trong thì phải thực hiện một layout có sẵn hoặc được tạo bằng code để xử lý.
 
 * Xem chi tiết source của class BottomNavigationView tại [đây](https://android.googlesource.com/platform/frameworks/support/+/9253a923d5de1336a385775b23cac04680a0af2a/design/src/android/support/design/widget/BottomNavigationView.java)
-
-* Trước hết, phải tạo một layout 
